@@ -176,7 +176,7 @@ describe('Renderer', () => {
       expect(capabilities.hasCanvas2D).toBe(true)
       expect(capabilities.maxTextureSize).toBe(0)
     })
-  }))
+  })
 
   describe('Error Handling', () => {
     it('should handle Canvas 2D context creation failure', () => {
