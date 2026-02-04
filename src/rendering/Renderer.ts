@@ -5,6 +5,7 @@
 
 import { CanvasRenderer } from './CanvasRenderer'
 import { WebGLRenderer } from './WebGLRenderer'
+import { UIRenderer } from './UIRenderer'
 
 export type RendererType = 'canvas2d' | 'webgl' | 'fallback'
 
@@ -20,6 +21,7 @@ export class Renderer {
   private canvas: HTMLCanvasElement
   private canvasRenderer: CanvasRenderer
   private webglRenderer: WebGLRenderer | null = null
+  private uiRenderer: UIRenderer
   private currentRenderer: CanvasRenderer | WebGLRenderer
   private capabilities: RenderingCapabilities
   
@@ -27,6 +29,13 @@ export class Renderer {
     this.canvas = canvas
     this.canvasRenderer = new CanvasRenderer(canvas)
     this.capabilities = this.detectCapabilities()
+    
+    // Create UI renderer with Canvas 2D context
+    const ctx = canvas.getContext('2d')
+    if (!ctx) {
+      throw new Error('Failed to get 2D rendering context for UI renderer')
+    }
+    this.uiRenderer = new UIRenderer(canvas, ctx)
     
     // Try to create WebGL renderer if supported
     if (this.capabilities.hasWebGL) {
@@ -95,6 +104,13 @@ export class Renderer {
   }
   
   /**
+   * Get the UI renderer
+   */
+  getUIRenderer(): UIRenderer {
+    return this.uiRenderer
+  }
+  
+  /**
    * Get the rendering context (Canvas 2D context)
    */
   getContext(): CanvasRenderingContext2D {
@@ -132,6 +148,7 @@ export class Renderer {
    */
   onResize(width: number, height: number): void {
     this.canvasRenderer.onResize(width, height)
+    this.uiRenderer.onResize(width, height)
     if (this.webglRenderer) {
       this.webglRenderer.onResize(width, height)
     }
