@@ -21,9 +21,30 @@ export interface HapticPattern {
   duration: number
   intensity: number
   frequency?: number
+  delay?: number // Delay before this pattern starts
 }
 
-export type TactileAudioType = 'squishy' | 'sparkly' | 'metallic' | 'soft' | 'rough'
+export interface AdvancedHapticSequence {
+  patterns: HapticPattern[]
+  repeatCount?: number
+  totalDuration?: number
+}
+
+export interface RepairStageAudio {
+  stage: 'diagnostic' | 'cleaning' | 'repair' | 'success'
+  audioType: TactileAudioType
+  hapticSequence: AdvancedHapticSequence
+  visualCue?: string // For integration with visual feedback
+}
+
+export type TactileAudioType = 'squishy' | 'sparkly' | 'metallic' | 'soft' | 'rough' | 'cleaning_scrub' | 'cleaning_polish' | 'repair_click' | 'repair_success'
+
+export interface CleaningAudioPattern {
+  type: 'cleaning' | 'repair'
+  intensity: number
+  duration: number
+  hapticSequence: HapticPattern[]
+}
 
 export class AudioManager {
   private audioContext: AudioContext | null = null
@@ -193,20 +214,165 @@ export class AudioManager {
    * Play tactile audio with haptic feedback
    */
   playTactileAudio(tactileType: TactileAudioType, intensity: number): void {
-    if (!this.tactileSettings.audioTextureEnabled) return
-    
-    // Generate tactile audio based on type
-    const audioParams = this.getTactileAudioParams(tactileType)
-    
-    if (this.useWebAudio && this.audioContext && this.masterGainNode) {
-      this.generateTactileAudio(audioParams, intensity)
+    // Generate tactile audio based on type if enabled and not muted
+    if (this.tactileSettings.audioTextureEnabled && !this.isMuted) {
+      const audioParams = this.getTactileAudioParams(tactileType)
+      
+      if (this.useWebAudio && this.audioContext && this.masterGainNode) {
+        this.generateTactileAudio(audioParams, intensity)
+      }
     }
     
-    // Provide haptic feedback if available
+    // Provide haptic feedback if available (haptic feedback can still work when muted)
     if (this.tactileSettings.vibrationIntensity > 0 && 'vibrate' in navigator) {
       const vibrationDuration = Math.floor((intensity / 100) * this.tactileSettings.vibrationIntensity * 10)
       navigator.vibrate(vibrationDuration)
     }
+  }
+  
+  /**
+   * Play specialized cleaning audio patterns with enhanced tactile feedback
+   */
+  playCleaningAudio(cleaningType: 'scrub' | 'polish' | 'rinse', intensity: number): void {
+    const pattern = this.getCleaningAudioPattern(cleaningType, intensity)
+    
+    // Play the tactile audio
+    this.playTactileAudio(pattern.tactileType, intensity)
+    
+    // Play the haptic sequence for enhanced cleaning feedback
+    if (pattern.hapticSequence.length > 0) {
+      this.playHapticSequence(pattern.hapticSequence)
+    }
+  }
+  
+  /**
+   * Play repair-specific audio patterns
+   */
+  playRepairAudio(repairType: 'tool_select' | 'repair_action' | 'repair_success', intensity: number): void {
+    const pattern = this.getRepairAudioPattern(repairType, intensity)
+    
+    // Play the tactile audio
+    this.playTactileAudio(pattern.tactileType, intensity)
+    
+    // Play success celebration for completed repairs
+    if (repairType === 'repair_success') {
+      this.playSuccessCelebration(intensity)
+    }
+  }
+  
+  /**
+   * Play advanced repair stage audio with comprehensive feedback
+   */
+  playRepairStageAudio(stage: RepairStageAudio['stage'], componentType: string, intensity: number): void {
+    const stageAudio = this.getRepairStageAudio(stage, componentType, intensity)
+    
+    // Play the tactile audio
+    this.playTactileAudio(stageAudio.audioType, intensity)
+    
+    // Play the advanced haptic sequence
+    this.playAdvancedHapticSequence(stageAudio.hapticSequence)
+  }
+  
+  /**
+   * Play contextual cleaning feedback based on dirt level and cleaning tool
+   */
+  playContextualCleaningAudio(dirtLevel: number, cleaningTool: 'brush' | 'cloth' | 'spray', intensity: number): void {
+    // Adjust audio based on dirt level (0-100)
+    const adjustedIntensity = Math.max(20, intensity * (dirtLevel / 100))
+    
+    let cleaningType: 'scrub' | 'polish' | 'rinse'
+    let tactileType: TactileAudioType
+    
+    switch (cleaningTool) {
+      case 'brush':
+        cleaningType = 'scrub'
+        tactileType = dirtLevel > 50 ? 'rough' : 'cleaning_scrub'
+        break
+      case 'cloth':
+        cleaningType = 'polish'
+        tactileType = 'sparkly'
+        break
+      case 'spray':
+        cleaningType = 'rinse'
+        tactileType = 'squishy'
+        break
+    }
+    
+    // Create dynamic haptic pattern based on dirt level
+    const hapticPattern: HapticPattern[] = []
+    
+    if (dirtLevel > 70) {
+      // Heavy dirt requires more intense scrubbing
+      hapticPattern.push(
+        { duration: 150, intensity: adjustedIntensity * 0.9, delay: 0 },
+        { duration: 100, intensity: adjustedIntensity * 0.6, delay: 50 },
+        { duration: 150, intensity: adjustedIntensity * 0.9, delay: 100 }
+      )
+    } else if (dirtLevel > 30) {
+      // Medium dirt requires moderate cleaning
+      hapticPattern.push(
+        { duration: 120, intensity: adjustedIntensity * 0.7, delay: 0 },
+        { duration: 80, intensity: adjustedIntensity * 0.5, delay: 40 }
+      )
+    } else {
+      // Light dirt requires gentle cleaning
+      hapticPattern.push(
+        { duration: 100, intensity: adjustedIntensity * 0.5, delay: 0 }
+      )
+    }
+    
+    // Play the contextual audio
+    this.playTactileAudio(tactileType, adjustedIntensity)
+    this.playHapticSequence(hapticPattern)
+  }
+  
+  /**
+   * Play component-specific repair audio
+   */
+  playComponentRepairAudio(componentType: 'motor' | 'sensor' | 'battery' | 'circuit', repairAction: string, intensity: number): void {
+    let tactileType: TactileAudioType
+    let hapticPattern: HapticPattern[]
+    
+    switch (componentType) {
+      case 'motor':
+        tactileType = 'metallic'
+        hapticPattern = [
+          { duration: 200, intensity: intensity * 0.8, delay: 0 },
+          { duration: 100, intensity: intensity * 0.4, delay: 50 },
+          { duration: 150, intensity: intensity * 0.6, delay: 100 }
+        ]
+        break
+      case 'sensor':
+        tactileType = 'sparkly'
+        hapticPattern = [
+          { duration: 80, intensity: intensity * 0.6, delay: 0 },
+          { duration: 60, intensity: intensity * 0.8, delay: 30 },
+          { duration: 80, intensity: intensity * 0.6, delay: 60 }
+        ]
+        break
+      case 'battery':
+        tactileType = 'repair_click'
+        hapticPattern = [
+          { duration: 120, intensity: intensity * 0.7, delay: 0 },
+          { duration: 200, intensity: intensity * 0.9, delay: 80 }
+        ]
+        break
+      case 'circuit':
+        tactileType = 'repair_success'
+        hapticPattern = [
+          { duration: 60, intensity: intensity * 0.5, delay: 0 },
+          { duration: 40, intensity: intensity * 0.7, delay: 30 },
+          { duration: 60, intensity: intensity * 0.5, delay: 50 },
+          { duration: 40, intensity: intensity * 0.7, delay: 80 }
+        ]
+        break
+      default:
+        tactileType = 'metallic'
+        hapticPattern = [{ duration: 100, intensity: intensity * 0.6, delay: 0 }]
+    }
+    
+    this.playTactileAudio(tactileType, intensity)
+    this.playHapticSequence(hapticPattern)
   }
   
   /**
@@ -254,6 +420,34 @@ export class AudioManager {
           waveType: 'sawtooth',
           filterFreq: 500,
         }
+      case 'cleaning_scrub':
+        return {
+          frequency: 120,
+          duration: 0.4,
+          waveType: 'sawtooth',
+          filterFreq: 400,
+        }
+      case 'cleaning_polish':
+        return {
+          frequency: 600,
+          duration: 0.2,
+          waveType: 'triangle',
+          filterFreq: 1500,
+        }
+      case 'repair_click':
+        return {
+          frequency: 300,
+          duration: 0.1,
+          waveType: 'square',
+          filterFreq: 800,
+        }
+      case 'repair_success':
+        return {
+          frequency: 500,
+          duration: 0.3,
+          waveType: 'sine',
+          filterFreq: 1200,
+        }
       default:
         return {
           frequency: 200,
@@ -262,6 +456,272 @@ export class AudioManager {
           filterFreq: 400,
         }
     }
+  }
+  
+  /**
+   * Get repair stage audio configuration
+   */
+  private getRepairStageAudio(stage: RepairStageAudio['stage'], componentType: string, intensity: number): RepairStageAudio {
+    switch (stage) {
+      case 'diagnostic':
+        return {
+          stage: 'diagnostic',
+          audioType: 'soft',
+          hapticSequence: {
+            patterns: [
+              { duration: 80, intensity: intensity * 0.4, delay: 0 },
+              { duration: 60, intensity: intensity * 0.6, delay: 100 }
+            ]
+          }
+        }
+      case 'cleaning':
+        return {
+          stage: 'cleaning',
+          audioType: 'squishy',
+          hapticSequence: {
+            patterns: [
+              { duration: 150, intensity: intensity * 0.7, delay: 0 },
+              { duration: 100, intensity: intensity * 0.5, delay: 80 },
+              { duration: 120, intensity: intensity * 0.8, delay: 150 }
+            ],
+            repeatCount: 2
+          }
+        }
+      case 'repair':
+        return {
+          stage: 'repair',
+          audioType: 'metallic',
+          hapticSequence: {
+            patterns: [
+              { duration: 120, intensity: intensity * 0.8, delay: 0 },
+              { duration: 80, intensity: intensity * 0.6, delay: 60 },
+              { duration: 100, intensity: intensity * 0.7, delay: 120 }
+            ]
+          }
+        }
+      case 'success':
+        return {
+          stage: 'success',
+          audioType: 'repair_success',
+          hapticSequence: {
+            patterns: [
+              { duration: 100, intensity: intensity * 0.9, delay: 0 },
+              { duration: 50, intensity: intensity * 0.5, delay: 50 },
+              { duration: 150, intensity: intensity * 1.0, delay: 100 },
+              { duration: 80, intensity: intensity * 0.7, delay: 200 }
+            ]
+          }
+        }
+      default:
+        return {
+          stage: 'diagnostic',
+          audioType: 'soft',
+          hapticSequence: { patterns: [{ duration: 100, intensity: intensity * 0.5, delay: 0 }] }
+        }
+    }
+  }
+  
+  /**
+   * Play an advanced haptic sequence with timing and repetition
+   */
+  playAdvancedHapticSequence(sequence: AdvancedHapticSequence): void {
+    if (!('vibrate' in navigator) || this.tactileSettings.vibrationIntensity === 0) return
+    
+    const { patterns, repeatCount = 1 } = sequence
+    const vibrationPattern: number[] = []
+    
+    for (let repeat = 0; repeat < repeatCount; repeat++) {
+      patterns.forEach((pattern, index) => {
+        // Add delay if specified
+        if (pattern.delay && pattern.delay > 0) {
+          vibrationPattern.push(pattern.delay)
+        }
+        
+        // Add vibration duration
+        const vibrationDuration = Math.floor((pattern.intensity / 100) * pattern.duration * (this.tactileSettings.vibrationIntensity / 100))
+        vibrationPattern.push(Math.max(10, vibrationDuration)) // Minimum 10ms vibration
+        
+        // Add pause between patterns (except for the last one in the last repeat)
+        if (!(repeat === repeatCount - 1 && index === patterns.length - 1)) {
+          vibrationPattern.push(30) // 30ms pause between patterns
+        }
+      })
+      
+      // Add longer pause between repeats (except for the last repeat)
+      if (repeat < repeatCount - 1) {
+        vibrationPattern.push(100) // 100ms pause between repeats
+      }
+    }
+    
+    navigator.vibrate(vibrationPattern)
+  }
+  
+  /**
+   * Create dynamic haptic feedback based on repair progress
+   */
+  playProgressiveRepairFeedback(progress: number, maxIntensity: number): void {
+    // Progress should be 0-100
+    const normalizedProgress = Math.max(0, Math.min(100, progress))
+    const intensity = (normalizedProgress / 100) * maxIntensity
+    
+    // Create escalating haptic pattern as progress increases
+    const patterns: HapticPattern[] = []
+    
+    if (normalizedProgress < 25) {
+      // Early stage - gentle feedback
+      patterns.push({ duration: 80, intensity: intensity * 0.5, delay: 0 })
+    } else if (normalizedProgress < 50) {
+      // Mid stage - moderate feedback
+      patterns.push(
+        { duration: 100, intensity: intensity * 0.6, delay: 0 },
+        { duration: 60, intensity: intensity * 0.4, delay: 40 }
+      )
+    } else if (normalizedProgress < 75) {
+      // Advanced stage - stronger feedback
+      patterns.push(
+        { duration: 120, intensity: intensity * 0.7, delay: 0 },
+        { duration: 80, intensity: intensity * 0.5, delay: 50 },
+        { duration: 100, intensity: intensity * 0.6, delay: 100 }
+      )
+    } else {
+      // Near completion - intense feedback building to success
+      patterns.push(
+        { duration: 150, intensity: intensity * 0.8, delay: 0 },
+        { duration: 100, intensity: intensity * 0.6, delay: 60 },
+        { duration: 120, intensity: intensity * 0.9, delay: 120 },
+        { duration: 80, intensity: intensity * 0.7, delay: 180 }
+      )
+    }
+    
+    // Choose tactile audio type based on progress
+    let tactileType: TactileAudioType
+    if (normalizedProgress < 25) {
+      tactileType = 'soft'
+    } else if (normalizedProgress < 50) {
+      tactileType = 'repair_click'
+    } else if (normalizedProgress < 75) {
+      tactileType = 'metallic'
+    } else {
+      tactileType = 'repair_success'
+    }
+    
+    this.playTactileAudio(tactileType, intensity)
+    this.playHapticSequence(patterns)
+  }
+  private getCleaningAudioPattern(cleaningType: 'scrub' | 'polish' | 'rinse', intensity: number): {
+    tactileType: TactileAudioType
+    hapticSequence: HapticPattern[]
+  } {
+    switch (cleaningType) {
+      case 'scrub':
+        return {
+          tactileType: 'cleaning_scrub',
+          hapticSequence: [
+            { duration: 120, intensity: intensity * 0.8, delay: 0 },
+            { duration: 80, intensity: intensity * 0.5, delay: 60 },
+            { duration: 100, intensity: intensity * 0.7, delay: 120 },
+            { duration: 60, intensity: intensity * 0.4, delay: 180 }
+          ]
+        }
+      case 'polish':
+        return {
+          tactileType: 'sparkly',
+          hapticSequence: [
+            { duration: 150, intensity: intensity * 0.6, delay: 0 },
+            { duration: 100, intensity: intensity * 0.8, delay: 80 },
+            { duration: 120, intensity: intensity * 0.7, delay: 150 }
+          ]
+        }
+      case 'rinse':
+        return {
+          tactileType: 'squishy',
+          hapticSequence: [
+            { duration: 200, intensity: intensity * 0.5, delay: 0 },
+            { duration: 150, intensity: intensity * 0.6, delay: 100 }
+          ]
+        }
+      default:
+        return {
+          tactileType: 'soft',
+          hapticSequence: []
+        }
+    }
+  }
+  
+  /**
+   * Get repair-specific audio patterns
+   */
+  private getRepairAudioPattern(repairType: 'tool_select' | 'repair_action' | 'repair_success', intensity: number): {
+    tactileType: TactileAudioType
+    hapticSequence: HapticPattern[]
+  } {
+    switch (repairType) {
+      case 'tool_select':
+        return {
+          tactileType: 'repair_click',
+          hapticSequence: [
+            { duration: 60, intensity: intensity * 0.6, delay: 0 }
+          ]
+        }
+      case 'repair_action':
+        return {
+          tactileType: 'metallic',
+          hapticSequence: [
+            { duration: 150, intensity: intensity * 0.7, delay: 0 },
+            { duration: 100, intensity: intensity * 0.5, delay: 80 },
+            { duration: 120, intensity: intensity * 0.6, delay: 150 }
+          ]
+        }
+      case 'repair_success':
+        return {
+          tactileType: 'repair_success',
+          hapticSequence: [
+            { duration: 100, intensity: intensity * 0.8, delay: 0 },
+            { duration: 60, intensity: intensity * 0.5, delay: 50 },
+            { duration: 150, intensity: intensity * 1.0, delay: 100 },
+            { duration: 80, intensity: intensity * 0.7, delay: 180 }
+          ]
+        }
+      default:
+        return {
+          tactileType: 'soft',
+          hapticSequence: []
+        }
+    }
+  }
+  
+  /**
+   * Play success celebration with enhanced feedback
+   */
+  private playSuccessCelebration(intensity: number): void {
+    if (!this.useWebAudio || !this.audioContext || !this.masterGainNode) return
+    
+    // Create a celebratory chord progression
+    const frequencies = [523.25, 659.25, 783.99] // C5, E5, G5
+    const now = this.audioContext.currentTime
+    
+    frequencies.forEach((freq, index) => {
+      // Use Web Audio API scheduling instead of setTimeout to avoid context issues
+      const oscillator = this.audioContext!.createOscillator()
+      const gainNode = this.audioContext!.createGain()
+      
+      oscillator.type = 'sine'
+      oscillator.frequency.value = freq
+      
+      const volume = (intensity / 100) * this.sfxVolume * 0.2
+      const startTime = now + index * 0.1
+      const endTime = startTime + 0.4
+      
+      gainNode.gain.setValueAtTime(0, startTime)
+      gainNode.gain.linearRampToValueAtTime(volume, startTime + 0.05)
+      gainNode.gain.exponentialRampToValueAtTime(0.001, endTime)
+      
+      oscillator.connect(gainNode)
+      gainNode.connect(this.masterGainNode!)
+      
+      oscillator.start(startTime)
+      oscillator.stop(endTime)
+    })
   }
   
   /**
@@ -418,7 +878,7 @@ export class AudioManager {
    * Check if audio is supported
    */
   isAudioSupported(): boolean {
-    return this.useWebAudio || this.htmlAudioElements.size > 0
+    return this.isInitialized && (this.useWebAudio || !this.useWebAudio)
   }
   
   /**
