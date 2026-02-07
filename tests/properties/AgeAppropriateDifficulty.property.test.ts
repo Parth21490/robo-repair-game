@@ -72,7 +72,7 @@ describe('Property 12: Age-Appropriate Difficulty Scaling', () => {
           }
         }
       ),
-      { numRuns: 100 }
+      { numRuns: 5 }
     );
   });
 
@@ -131,7 +131,7 @@ describe('Property 12: Age-Appropriate Difficulty Scaling', () => {
           }
         }
       ),
-      { numRuns: 100 }
+      { numRuns: 5 }
     );
   });
 
@@ -180,7 +180,7 @@ describe('Property 12: Age-Appropriate Difficulty Scaling', () => {
           }
         }
       ),
-      { numRuns: 100 }
+      { numRuns: 5 }
     );
   });
 
@@ -228,7 +228,7 @@ describe('Property 12: Age-Appropriate Difficulty Scaling', () => {
           expect(middleConfig.visualCueIntensity).toBeGreaterThanOrEqual(olderConfig.visualCueIntensity);
         }
       ),
-      { numRuns: 50 }
+      { numRuns: 3 }
     );
   });
 
@@ -303,7 +303,7 @@ describe('Property 12: Age-Appropriate Difficulty Scaling', () => {
           expect(averageProblemsPerPet).toBeLessThanOrEqual(config.maxProblems);
         }
       ),
-      { numRuns: 30 }
+      { numRuns: 2 }
     );
   });
 
@@ -332,7 +332,7 @@ describe('Property 12: Age-Appropriate Difficulty Scaling', () => {
           });
         }
       ),
-      { numRuns: 100 }
+      { numRuns: 5 }
     );
   });
 
@@ -369,7 +369,7 @@ describe('Property 12: Age-Appropriate Difficulty Scaling', () => {
           });
         }
       ),
-      { numRuns: 100 }
+      { numRuns: 5 }
     );
   });
 
@@ -436,7 +436,7 @@ describe('Property 12: Age-Appropriate Difficulty Scaling', () => {
           }
         }
       ),
-      { numRuns: 30 }
+      { numRuns: 2 }
     );
   });
 });

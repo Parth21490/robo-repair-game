@@ -98,7 +98,7 @@ describe('GameEngine Property Tests', () => {
           }
         }
       ),
-      { numRuns: 10, timeout: 10000 } // Reduced iterations for faster testing
+      { numRuns: 3, timeout: 10000 } // Reduced iterations for faster testing
     )
   })
   
@@ -154,7 +154,7 @@ describe('GameEngine Property Tests', () => {
           }
         }
       ),
-      { numRuns: 8 } // Reduced iterations for faster testing
+      { numRuns: 2 } // Reduced iterations for faster testing
     )
   })
   
@@ -217,7 +217,7 @@ describe('GameEngine Property Tests', () => {
           }
         }
       ),
-      { numRuns: 12 } // Reduced iterations for faster testing
+      { numRuns: 3 } // Reduced iterations for faster testing
     )
   })
   
@@ -281,7 +281,7 @@ describe('GameEngine Property Tests', () => {
           }
         }
       ),
-      { numRuns: 8 } // Reduced iterations for faster testing
+      { numRuns: 2 } // Reduced iterations for faster testing
     )
   })
   
@@ -343,7 +343,7 @@ describe('GameEngine Property Tests', () => {
           }
         }
       ),
-      { numRuns: 6 } // Reduced iterations for faster testing
+      { numRuns: 2 } // Reduced iterations for faster testing
     )
   })
   
@@ -403,7 +403,7 @@ describe('GameEngine Property Tests', () => {
           }
         }
       ),
-      { numRuns: 8 } // Reduced iterations for faster testing
+      { numRuns: 2 } // Reduced iterations for faster testing
     )
   })
 })

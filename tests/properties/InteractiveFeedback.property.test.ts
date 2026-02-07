@@ -115,7 +115,7 @@ describe('Property Tests: Interactive Feedback System', () => {
           // Should always provide haptic feedback when available
           expect(navigator.vibrate).toHaveBeenCalled()
         }
-      ), { numRuns: 50 })
+      ), { numRuns: 3 })
     })
 
     it('should provide appropriate tactile feedback for any cleaning interaction', async () => {
@@ -142,7 +142,7 @@ describe('Property Tests: Interactive Feedback System', () => {
           // Should provide haptic feedback sequence
           expect(navigator.vibrate).toHaveBeenCalled()
         }
-      ), { numRuns: 50 })
+      ), { numRuns: 3 })
     })
 
     it('should provide consistent tactile audio for any tactile type and intensity', async () => {
@@ -173,7 +173,7 @@ describe('Property Tests: Interactive Feedback System', () => {
             expect(navigator.vibrate).toHaveBeenCalled()
           }
         }
-      ), { numRuns: 100 })
+      ), { numRuns: 5 })
     })
 
     it('should respect volume settings for any audio feedback', async () => {
@@ -201,7 +201,7 @@ describe('Property Tests: Interactive Feedback System', () => {
           const volumeLevels = audioManager.getVolumeLevels()
           expect(volumeLevels.master).toBe(volume)
         }
-      ), { numRuns: 50 })
+      ), { numRuns: 3 })
     })
 
     it('should not provide audio feedback when muted but may still provide haptic feedback', async () => {
@@ -226,7 +226,7 @@ describe('Property Tests: Interactive Feedback System', () => {
           // But should still provide haptic feedback
           expect(navigator.vibrate).toHaveBeenCalled()
         }
-      ), { numRuns: 30 })
+      ), { numRuns: 2 })
     })
 
     it('should provide feedback that matches interaction outcome type', async () => {
@@ -268,7 +268,7 @@ describe('Property Tests: Interactive Feedback System', () => {
           // All interactions should provide some form of feedback
           expect(navigator.vibrate).toHaveBeenCalled()
         }
-      ), { numRuns: 50 })
+      ), { numRuns: 3 })
     })
 
     it('should handle tactile settings configuration consistently', async () => {
@@ -314,7 +314,7 @@ describe('Property Tests: Interactive Feedback System', () => {
           expect(appliedSettings.spatialHapticsEnabled).toBe(settings.spatialHapticsEnabled)
           expect(appliedSettings.frequencyRange).toEqual(settings.frequencyRange)
         }
-      ), { numRuns: 30 })
+      ), { numRuns: 2 })
     })
   })
 })

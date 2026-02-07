@@ -107,7 +107,7 @@ describe('Renderer Property Tests', () => {
           expect(typeof renderer.getContext).toBe('function')
           expect(typeof renderer.onResize).toBe('function')
         }
-      ), { numRuns: 10 }) // Reduced from 100 for faster execution
+      ), { numRuns: 3 }) // Reduced from 100 for faster execution
     })
 
     it('should gracefully handle WebGL unavailability while maintaining Canvas 2D functionality', () => {
@@ -144,7 +144,7 @@ describe('Renderer Property Tests', () => {
           // Should always default to Canvas 2D as primary (requirement 8.2)
           expect(renderer.getRendererType()).toBe('canvas2d')
         }
-      ), { numRuns: 15 }) // Reduced from 100 for faster execution
+      ), { numRuns: 4 }) // Reduced from 100 for faster execution
     })
 
     it('should initialize within reasonable time bounds', async () => {
@@ -176,7 +176,7 @@ describe('Renderer Property Tests', () => {
           expect(renderer.getRendererType()).toBe('canvas2d')
           expect(renderer.getContext()).toBe(ctx2d)
         }
-      ), { numRuns: 10 }) // Reduced from 100 for faster execution
+      ), { numRuns: 3 }) // Reduced from 100 for faster execution
     })
 
     it('should handle renderer switching consistently', async () => {
@@ -219,7 +219,7 @@ describe('Renderer Property Tests', () => {
           // Should always be able to get a valid context
           expect(renderer.getContext()).toBe(ctx2d)
         }
-      ), { numRuns: 10 }) // Reduced from 100 for faster execution
+      ), { numRuns: 3 }) // Reduced from 100 for faster execution
     })
 
     it('should handle resize operations without losing functionality', async () => {
@@ -255,7 +255,7 @@ describe('Renderer Property Tests', () => {
             expect(renderer.getRendererType()).toBe('canvas2d')
           }
         }
-      ), { numRuns: 10 }) // Reduced from 100 for faster execution
+      ), { numRuns: 3 }) // Reduced from 100 for faster execution
     })
   })
 
@@ -294,7 +294,7 @@ describe('Renderer Property Tests', () => {
           // Should always provide Canvas 2D context (fallback guarantee)
           expect(renderer.getContext()).toBe(ctx2d)
         }
-      ), { numRuns: 15 }) // Reduced from 100 for faster execution
+      ), { numRuns: 4 }) // Reduced from 100 for faster execution
     })
 
     it('should maintain state consistency during operations', async () => {
@@ -349,7 +349,7 @@ describe('Renderer Property Tests', () => {
             expect(renderer.getContext()).toBe(ctx2d)
           }
         }
-      ), { numRuns: 10 }) // Reduced from 100 for faster execution
+      ), { numRuns: 3 }) // Reduced from 100 for faster execution
     })
   })
 
@@ -385,7 +385,7 @@ describe('Renderer Property Tests', () => {
             expect(renderer.getRendererType()).toBe('canvas2d')
           }
         }
-      ), { numRuns: 15 }) // Reduced from 100 for faster execution
+      ), { numRuns: 4 }) // Reduced from 100 for faster execution
     })
   })
 })

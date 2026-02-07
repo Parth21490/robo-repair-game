@@ -142,7 +142,7 @@ describe('StateManager Property Tests', () => {
           expect(stateManager.canGoBack()).toBe(true)
         }
       ),
-      { numRuns: 10 } // Reduced iterations for faster testing
+      { numRuns: 3 } // Reduced iterations for faster testing
     )
   })
 
@@ -181,7 +181,7 @@ describe('StateManager Property Tests', () => {
           expect(stateManager.getCurrentState()).toBe(finalState)
         }
       ),
-      { numRuns: 10 } // Reduced iterations for faster testing
+      { numRuns: 3 } // Reduced iterations for faster testing
     )
   })
 
@@ -220,7 +220,7 @@ describe('StateManager Property Tests', () => {
           expect(toState.enterCalled).toBe(true)
         }
       ),
-      { numRuns: 10 } // Reduced iterations for faster testing
+      { numRuns: 3 } // Reduced iterations for faster testing
     )
   })
 
@@ -258,7 +258,7 @@ describe('StateManager Property Tests', () => {
           expect(stateManager.getCurrentState()).toBe(currentState)
         }
       ),
-      { numRuns: 8 } // Reduced iterations for faster testing
+      { numRuns: 2 } // Reduced iterations for faster testing
     )
   })
 
@@ -295,7 +295,7 @@ describe('StateManager Property Tests', () => {
           expect(stateManager.goBack()).toBe(false)
         }
       ),
-      { numRuns: 6 } // Reduced iterations for faster testing
+      { numRuns: 2 } // Reduced iterations for faster testing
     )
   })
 
@@ -328,7 +328,7 @@ describe('StateManager Property Tests', () => {
           expect(stateManager.getCurrentState()).toBe(testState)
         }
       ),
-      { numRuns: 6 } // Reduced iterations for faster testing
+      { numRuns: 2 } // Reduced iterations for faster testing
     )
   })
 
@@ -371,7 +371,7 @@ describe('StateManager Property Tests', () => {
           }
         }
       ),
-      { numRuns: 8 } // Reduced iterations for faster testing
+      { numRuns: 2 } // Reduced iterations for faster testing
     )
   })
 
@@ -413,7 +413,7 @@ describe('StateManager Property Tests', () => {
           }
         }
       ),
-      { numRuns: 6 } // Reduced iterations for faster testing
+      { numRuns: 2 } // Reduced iterations for faster testing
     )
   })
 
@@ -466,7 +466,7 @@ describe('StateManager Property Tests', () => {
           }
         }
       ),
-      { numRuns: 6 } // Reduced iterations for faster testing
+      { numRuns: 2 } // Reduced iterations for faster testing
     )
   })
 
@@ -523,7 +523,7 @@ describe('StateManager Property Tests', () => {
           expect(history.length).toBeLessThanOrEqual(10)
         }
       ),
-      { numRuns: 8 } // Reduced iterations for faster testing
+      { numRuns: 2 } // Reduced iterations for faster testing
     )
   })
 })

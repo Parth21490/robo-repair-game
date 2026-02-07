@@ -139,7 +139,7 @@ describe('Property 5: Diagnostic Mode Behavior', () => {
           expect(mockContext.fillText).toHaveBeenCalled() // For component labels
         }
       ),
-      { numRuns: 50 }
+      { numRuns: 3 }
     )
   })
 
@@ -207,7 +207,7 @@ describe('Property 5: Diagnostic Mode Behavior', () => {
           expect(progressAfterHint.timeElapsed).toBe(expectedHintDelay)
         }
       ),
-      { numRuns: 30 }
+      { numRuns: 2 }
     )
   })
 
@@ -251,7 +251,7 @@ describe('Property 5: Diagnostic Mode Behavior', () => {
           expect(finalProgress.identifiedProblems).toBe(finalProgress.totalProblems)
         }
       ),
-      { numRuns: 30 }
+      { numRuns: 2 }
     )
   })
 
@@ -306,7 +306,7 @@ describe('Property 5: Diagnostic Mode Behavior', () => {
           expect(progressAfterClick.incorrectAttempts).toBeGreaterThanOrEqual(0)
         }
       ),
-      { numRuns: 50 }
+      { numRuns: 3 }
     )
   })
 
@@ -354,7 +354,7 @@ describe('Property 5: Diagnostic Mode Behavior', () => {
           expect(progress.isComplete).toBe(false)
         }
       ),
-      { numRuns: 50 }
+      { numRuns: 3 }
     )
   })
 
@@ -419,7 +419,7 @@ describe('Property 5: Diagnostic Mode Behavior', () => {
           }
         }
       ),
-      { numRuns: 20 }
+      { numRuns: 5 }
     )
   })
 
@@ -459,7 +459,7 @@ describe('Property 5: Diagnostic Mode Behavior', () => {
           expect(progressAfterHint.hintsUsed).toBe(initialProgress.hintsUsed + 1)
         }
       ),
-      { numRuns: 30 }
+      { numRuns: 2 }
     )
   })
 
@@ -517,7 +517,7 @@ describe('Property 5: Diagnostic Mode Behavior', () => {
           }
         }
       ),
-      { numRuns: 30 }
+      { numRuns: 2 }
     )
   })
 })

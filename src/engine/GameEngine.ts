@@ -10,6 +10,8 @@ import { AudioManager } from '@/audio/AudioManager'
 import { GameState } from './GameState'
 import { MenuState } from '@/states/MenuState'
 import { ErrorHandler } from '@/utils/ErrorHandler'
+import { PrivacyManager } from '@/privacy/PrivacyManager'
+import { LocalStorageManager } from '@/privacy/LocalStorageManager'
 
 export class GameEngine {
   private canvas: HTMLCanvasElement
@@ -57,6 +59,9 @@ export class GameEngine {
    */
   async initialize(): Promise<void> {
     try {
+      // Initialize privacy systems first (COPPA compliance)
+      await this.initializePrivacySystems()
+      
       // Initialize systems in order with error handling
       await this.initializeRenderer()
       await this.initializeAudio()
@@ -73,7 +78,7 @@ export class GameEngine {
       // Start the game loop
       this.start()
       
-      console.log('🎮 Game Engine initialized successfully')
+      console.log('🎮 Game Engine initialized successfully with COPPA compliance')
       
     } catch (error) {
       ErrorHandler.handleInitializationError(error as Error)
@@ -131,6 +136,38 @@ export class GameEngine {
       
       // Input failure is critical, but try to continue
       console.warn('⚠️ Input system may not work properly')
+    }
+  }
+  
+  /**
+   * Initialize privacy systems for COPPA compliance
+   */
+  private async initializePrivacySystems(): Promise<void> {
+    try {
+      console.log('🔒 Initializing privacy systems for COPPA compliance...')
+      
+      // Initialize Privacy Manager
+      const privacyManager = PrivacyManager.getInstance()
+      privacyManager.initialize()
+      
+      // Initialize Local Storage Manager
+      const storageManager = LocalStorageManager.getInstance()
+      storageManager.initialize()
+      
+      // Perform initial privacy audit
+      const audit = privacyManager.performPrivacyAudit()
+      if (!audit.compliant) {
+        console.warn('⚠️ Privacy audit found issues:', audit.issues)
+        // Clean up any non-compliant data
+        storageManager.cleanup()
+      }
+      
+      console.log('✅ Privacy systems initialized successfully')
+      
+    } catch (error) {
+      console.error('❌ Failed to initialize privacy systems:', error)
+      ErrorHandler.handleInitializationError(error as Error)
+      throw error
     }
   }
   

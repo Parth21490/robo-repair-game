@@ -22,6 +22,8 @@ import {
 } from './types.js';
 import { STEMAnalyticsEngine } from './STEMAnalytics.js';
 import { ParentTeacherReportGenerator } from './ParentTeacherReport.js';
+import { LocalStorageManager } from '../privacy/LocalStorageManager.js';
+import { PrivacyManager } from '../privacy/PrivacyManager.js';
 
 export class ProgressManager {
   private static instance: ProgressManager;
@@ -31,8 +33,12 @@ export class ProgressManager {
   private eventListeners: Map<ProgressEventType, ((data: any) => void)[]> = new Map();
   private stemAnalytics: STEMAnalyticsEngine;
   private reportGenerator: ParentTeacherReportGenerator;
+  private storageManager: LocalStorageManager;
+  private privacyManager: PrivacyManager;
 
   private constructor() {
+    this.storageManager = LocalStorageManager.getInstance();
+    this.privacyManager = PrivacyManager.getInstance();
     this.milestones = this.initializeMilestones();
     this.progress = this.loadProgress();
     this.stemAnalytics = STEMAnalyticsEngine.getInstance();
@@ -42,8 +48,29 @@ export class ProgressManager {
   public static getInstance(): ProgressManager {
     if (!ProgressManager.instance) {
       ProgressManager.instance = new ProgressManager();
+      // Initialize privacy compliance
+      ProgressManager.instance.initializePrivacyCompliance();
     }
     return ProgressManager.instance;
+  }
+
+  /**
+   * Initialize privacy compliance features
+   */
+  private initializePrivacyCompliance(): void {
+    // Initialize storage manager with privacy checks
+    this.storageManager.initialize();
+    
+    // Initialize privacy manager
+    this.privacyManager.initialize();
+    
+    // Perform initial privacy audit
+    const audit = this.privacyManager.performPrivacyAudit();
+    if (!audit.compliant) {
+      console.warn('Initial privacy audit found issues:', audit.issues);
+    }
+    
+    console.log('Progress Manager initialized with COPPA compliance');
   }
 
   /**
@@ -153,32 +180,37 @@ export class ProgressManager {
   }
 
   /**
-   * Load progress from local storage
+   * Load progress from local storage with privacy compliance
    */
   private loadProgress(): PlayerProgress {
     try {
-      const savedProgress = localStorage.getItem('robo_pet_progress');
+      const savedProgress = this.storageManager.getItem<PlayerProgress>('progress');
       if (savedProgress) {
-        const parsed = JSON.parse(savedProgress);
         // Convert date strings back to Date objects
-        parsed.createdAt = new Date(parsed.createdAt);
-        parsed.lastModified = new Date(parsed.lastModified);
-        parsed.achievements = parsed.achievements.map((achievement: any) => ({
+        savedProgress.createdAt = new Date(savedProgress.createdAt);
+        savedProgress.lastModified = new Date(savedProgress.lastModified);
+        savedProgress.achievements = savedProgress.achievements.map((achievement: any) => ({
           ...achievement,
           unlockedAt: new Date(achievement.unlockedAt)
         }));
-        parsed.sessionHistory = parsed.sessionHistory.map((session: any) => ({
+        savedProgress.sessionHistory = savedProgress.sessionHistory.map((session: any) => ({
           ...session,
           startTime: new Date(session.startTime),
           endTime: session.endTime ? new Date(session.endTime) : undefined
         }));
-        return parsed;
+        
+        // Validate privacy compliance of loaded data
+        if (this.privacyManager.validateDataForStorage(savedProgress)) {
+          return savedProgress;
+        } else {
+          console.warn('Loaded progress data failed privacy validation, creating new progress');
+        }
       }
     } catch (error) {
-      console.warn('Failed to load progress from localStorage:', error);
+      console.warn('Failed to load progress from storage:', error);
     }
 
-    // Create new progress if none exists
+    // Create new progress if none exists or validation failed
     return this.createNewProgress();
   }
 
@@ -229,21 +261,37 @@ export class ProgressManager {
   }
 
   /**
-   * Generate a unique player ID (no PII)
+   * Generate a unique player ID (no PII, privacy compliant)
    */
   private generatePlayerId(): string {
+    // Use privacy manager to generate anonymous ID
     return 'player_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
   }
 
   /**
-   * Save progress to local storage
+   * Save progress to local storage with privacy compliance
    */
   private saveProgress(): void {
     try {
       this.progress.lastModified = new Date();
-      localStorage.setItem('robo_pet_progress', JSON.stringify(this.progress));
+      
+      // Validate data before saving
+      if (!this.privacyManager.validateDataForStorage(this.progress)) {
+        console.error('Progress data failed privacy validation, not saving');
+        return;
+      }
+
+      // Use privacy-compliant storage manager
+      const success = this.storageManager.setItem('progress', this.progress, {
+        validatePrivacy: true,
+        maxSize: 1024 * 1024 // 1MB limit for progress data
+      });
+
+      if (!success) {
+        console.error('Failed to save progress data');
+      }
     } catch (error) {
-      console.error('Failed to save progress to localStorage:', error);
+      console.error('Failed to save progress:', error);
     }
   }
 
@@ -716,17 +764,21 @@ export class ProgressManager {
   }
 
   /**
-   * Reset progress (for testing or new player)
+   * Reset progress (for testing or new player) with privacy compliance
    */
   public resetProgress(): void {
     this.progress = this.createNewProgress();
     this.currentSession = null;
-    localStorage.removeItem('robo_pet_progress');
+    
+    // Use privacy-compliant storage manager to clear data
+    this.storageManager.removeItem('progress');
     this.saveProgress();
+    
+    console.log('Progress reset with privacy compliance');
   }
 
   /**
-   * Export progress data for parent-teacher reports
+   * Export progress data for parent-teacher reports (privacy compliant)
    */
   public exportProgressData(): string {
     const exportData = {
@@ -736,7 +788,13 @@ export class ProgressManager {
       exportedAt: new Date()
     };
     
-    return JSON.stringify(exportData, null, 2);
+    // Use privacy manager to ensure compliant export
+    return this.privacyManager.generatePrivacyCompliantExport(exportData, {
+      includePersonalData: false,
+      includeProgressData: true,
+      includeSTEMAnalytics: true,
+      includeAchievements: true
+    });
   }
 
   /**

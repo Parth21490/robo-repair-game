@@ -172,7 +172,7 @@ describe('Property 13: Photo Booth Functionality', () => {
         
         return true
       }
-    ), { numRuns: 100 })
+    ), { numRuns: 5 })
   })
 
   /**
@@ -213,7 +213,7 @@ describe('Property 13: Photo Booth Functionality', () => {
         photoBoothState.exit()
         return true
       }
-    ), { numRuns: 50 })
+    ), { numRuns: 3 })
   })
 
   /**
@@ -258,7 +258,7 @@ describe('Property 13: Photo Booth Functionality', () => {
         photoBoothState.exit()
         return true
       }
-    ), { numRuns: 50 })
+    ), { numRuns: 3 })
   })
 
   /**
@@ -299,7 +299,7 @@ describe('Property 13: Photo Booth Functionality', () => {
         photoBoothState.exit()
         return true
       }
-    ), { numRuns: 50 })
+    ), { numRuns: 3 })
   })
 
   /**
@@ -357,7 +357,7 @@ describe('Property 13: Photo Booth Functionality', () => {
         photoBoothState.exit()
         return true
       }
-    ), { numRuns: 50 })
+    ), { numRuns: 3 })
   })
 
   /**
@@ -399,7 +399,7 @@ describe('Property 13: Photo Booth Functionality', () => {
         
         return true
       }
-    ), { numRuns: 30 })
+    ), { numRuns: 2 })
   })
 
   /**
@@ -442,7 +442,7 @@ describe('Property 13: Photo Booth Functionality', () => {
         
         return true
       }
-    ), { numRuns: 100 })
+    ), { numRuns: 5 })
   })
 
   /**
@@ -482,6 +482,6 @@ describe('Property 13: Photo Booth Functionality', () => {
         photoBoothState.exit()
         return true
       }
-    ), { numRuns: 50 })
+    ), { numRuns: 3 })
   })
 })

@@ -1048,8 +1048,7 @@ export class RepairState extends BaseGameState {
     this.addCelebrationEffects()
     
     // TODO: Transition to customization state
-    // This would be handled by the StateManager
-  } the state manager
+    // This would be handled by the state manager
   }
   
   // Visual effect methods

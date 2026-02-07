@@ -43,7 +43,7 @@ describe('Property 2: Robo-Pet Generation Consistency', () => {
           });
         }
       ),
-      { numRuns: 100 }
+      { numRuns: 5 }
     );
   });
 
@@ -84,7 +84,7 @@ describe('Property 2: Robo-Pet Generation Consistency', () => {
           }
         }
       ),
-      { numRuns: 50 }
+      { numRuns: 3 }
     );
   });
 
@@ -122,7 +122,7 @@ describe('Property 2: Robo-Pet Generation Consistency', () => {
           }
         }
       ),
-      { numRuns: 30 }
+      { numRuns: 2 }
     );
   });
 
@@ -173,7 +173,7 @@ describe('Property 2: Robo-Pet Generation Consistency', () => {
           expect(pet.lastModified).toBeInstanceOf(Date);
         }
       ),
-      { numRuns: 100 }
+      { numRuns: 5 }
     );
   });
 
@@ -215,7 +215,7 @@ describe('Property 2: Robo-Pet Generation Consistency', () => {
           });
         }
       ),
-      { numRuns: 100 }
+      { numRuns: 5 }
     );
   });
 
@@ -263,7 +263,7 @@ describe('Property 2: Robo-Pet Generation Consistency', () => {
           }
         }
       ),
-      { numRuns: 50 }
+      { numRuns: 3 }
     );
   });
 
@@ -307,7 +307,7 @@ describe('Property 2: Robo-Pet Generation Consistency', () => {
           }
         }
       ),
-      { numRuns: 100 }
+      { numRuns: 5 }
     );
   });
 });

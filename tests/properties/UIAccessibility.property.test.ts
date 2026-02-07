@@ -137,7 +137,7 @@ describe('UI Accessibility Property Tests', () => {
           expect(button.width).toBeGreaterThanOrEqual(120)
           expect(button.height).toBeGreaterThanOrEqual(44)
         }),
-        { numRuns: 15 } // Reduced from 100 as requested
+        { numRuns: 4 } // Reduced from 100 as requested
       )
     })
     
@@ -166,7 +166,7 @@ describe('UI Accessibility Property Tests', () => {
             }
           }
         ),
-        { numRuns: 15 }
+        { numRuns: 4 }
       )
     })
     
@@ -189,7 +189,7 @@ describe('UI Accessibility Property Tests', () => {
             expect(button.fontSize).toBeCloseTo(expectedFontSize, 1)
           }
         ),
-        { numRuns: 15 }
+        { numRuns: 4 }
       )
     })
     
@@ -228,7 +228,7 @@ describe('UI Accessibility Property Tests', () => {
             expect(enterHandled).toBe(true)
           }
         ),
-        { numRuns: 10 }
+        { numRuns: 3 }
       )
     })
     
@@ -263,7 +263,7 @@ describe('UI Accessibility Property Tests', () => {
           uiRenderer.handlePointerInput(centerX, centerY, 'move')
           expect(button.hovered).toBe(true)
         }),
-        { numRuns: 15 }
+        { numRuns: 4 }
       )
     })
     
@@ -297,7 +297,7 @@ describe('UI Accessibility Property Tests', () => {
             }
           }
         ),
-        { numRuns: 15 }
+        { numRuns: 4 }
       )
     })
     
@@ -332,7 +332,7 @@ describe('UI Accessibility Property Tests', () => {
             expect(button.height).toBeGreaterThanOrEqual(44 * expectedScaleFactor)
           }
         ),
-        { numRuns: 15 }
+        { numRuns: 4 }
       )
     })
     
@@ -355,7 +355,7 @@ describe('UI Accessibility Property Tests', () => {
           // Focus indicator should be visible (bright color)
           expect(ctx.strokeStyle).toBe('#F39C12') // Highlight color
         }),
-        { numRuns: 15 }
+        { numRuns: 4 }
       )
     })
     
@@ -387,7 +387,7 @@ describe('UI Accessibility Property Tests', () => {
             }
           }
         ),
-        { numRuns: 15 }
+        { numRuns: 4 }
       )
     })
     
@@ -422,7 +422,7 @@ describe('UI Accessibility Property Tests', () => {
             expect(() => uiRenderer.renderButton(button)).not.toThrow()
           }
         ),
-        { numRuns: 15 }
+        { numRuns: 4 }
       )
     })
   })

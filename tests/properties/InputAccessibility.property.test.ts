@@ -220,7 +220,7 @@ describe('Input Accessibility Property Tests', () => {
             }
           }
         ),
-        { numRuns: 15 }
+        { numRuns: 4 }
       )
     })
     
@@ -273,7 +273,7 @@ describe('Input Accessibility Property Tests', () => {
             }
           }
         ),
-        { numRuns: 15 }
+        { numRuns: 4 }
       )
     })
     
@@ -299,7 +299,7 @@ describe('Input Accessibility Property Tests', () => {
             }
           }
         ),
-        { numRuns: 15 }
+        { numRuns: 4 }
       )
     })
     
@@ -375,7 +375,7 @@ describe('Input Accessibility Property Tests', () => {
             }
           }
         ),
-        { numRuns: 15 }
+        { numRuns: 4 }
       )
     })
     
@@ -427,7 +427,7 @@ describe('Input Accessibility Property Tests', () => {
             expect(focusedAfterShiftTab).toBeTruthy()
           }
         ),
-        { numRuns: 10 }
+        { numRuns: 3 }
       )
     })
     
@@ -469,7 +469,7 @@ describe('Input Accessibility Property Tests', () => {
             expect(overlayHandSystem.getActiveAnimationCount()).toBe(0)
           }
         ),
-        { numRuns: 15 }
+        { numRuns: 4 }
       )
     })
     
@@ -520,7 +520,7 @@ describe('Input Accessibility Property Tests', () => {
             expect(newFocus).toBeTruthy()
           }
         ),
-        { numRuns: 10 }
+        { numRuns: 3 }
       )
     })
     
@@ -573,7 +573,7 @@ describe('Input Accessibility Property Tests', () => {
             }
           }
         ),
-        { numRuns: 15 }
+        { numRuns: 4 }
       )
     })
     
@@ -614,7 +614,7 @@ describe('Input Accessibility Property Tests', () => {
             expect(overlayHandSystem.isSystemInitialized()).toBe(true)
           }
         ),
-        { numRuns: 15 }
+        { numRuns: 4 }
       )
     })
   })

@@ -65,12 +65,15 @@ export class STEMAnalyticsEngine {
 
     // Calculate current skill level based on recent performance
     const recentPerformance = diagnosticHistory.slice(-10); // Last 10 diagnostics
-    const averageAccuracy = recentPerformance.reduce((sum, d) => sum + d.accuracy, 0) / recentPerformance.length;
+    const averageAccuracy = recentPerformance.reduce((sum, d) => {
+      const accuracy = isNaN(d.accuracy) ? 0 : d.accuracy;
+      return sum + accuracy;
+    }, 0) / recentPerformance.length;
     const averageSpeed = this.calculateSpeedScore(recentPerformance, ageGroup);
     const independenceScore = this.calculateIndependenceScore(recentPerformance);
     
     // Weight accuracy more heavily and ensure poor performance gets low scores
-    const accuracyScore = averageAccuracy * 100; // Convert to 0-100 scale
+    const accuracyScore = (isNaN(averageAccuracy) ? 0 : averageAccuracy) * 100; // Convert to 0-100 scale
     const currentLevel = Math.round((accuracyScore * 0.5 + averageSpeed * 0.25 + independenceScore * 0.25));
     
     // Determine progress trend
@@ -328,8 +331,12 @@ export class STEMAnalyticsEngine {
   private calculateProgressTrend(values: number[]): 'improving' | 'stable' | 'declining' {
     if (values.length < 3) return 'stable';
     
-    const recent = values.slice(-5);
-    const earlier = values.slice(-10, -5);
+    // Filter out NaN values
+    const validValues = values.filter(v => !isNaN(v));
+    if (validValues.length < 3) return 'stable';
+    
+    const recent = validValues.slice(-5);
+    const earlier = validValues.slice(-10, -5);
     
     if (earlier.length === 0) return 'stable';
     

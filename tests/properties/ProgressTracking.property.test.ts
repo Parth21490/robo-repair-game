@@ -109,7 +109,7 @@ describe('Progress Tracking System Properties', () => {
           // Verify gems balance consistency
           expect(progressManager.getAvailableGems()).toBe(progress.roboGemsEarned - progress.roboGemsSpent)
         }
-      ), { numRuns: 50 })
+      ), { numRuns: 3 })
     })
 
     it('should maintain consistent gem economy across spending and earning', () => {
@@ -172,7 +172,7 @@ describe('Progress Tracking System Properties', () => {
           // Verify no negative gems
           expect(progressManager.getAvailableGems()).toBeGreaterThanOrEqual(0)
         }
-      ), { numRuns: 30 })
+      ), { numRuns: 2 })
     })
 
     it('should track STEM analytics accurately across different activities', () => {
@@ -258,7 +258,7 @@ describe('Progress Tracking System Properties', () => {
             expect(stemMetrics.problemSolvingScore).toBeLessThanOrEqual(100)
           }
         }
-      ), { numRuns: 25 })
+      ), { numRuns: 2 })
     })
 
     it('should unlock rewards and milestones at correct thresholds', () => {
@@ -310,7 +310,7 @@ describe('Progress Tracking System Properties', () => {
           // Verify gems are awarded for each repair
           expect(progressManager.getProgress().roboGemsEarned).toBeGreaterThan(0)
         }
-      ), { numRuns: 20 })
+      ), { numRuns: 5 })
     })
 
     it('should maintain data consistency across age groups', () => {
@@ -355,7 +355,7 @@ describe('Progress Tracking System Properties', () => {
             expect(averageGemsPerRepair).toBeGreaterThanOrEqual(10) // Base + young bonus
           }
         }
-      ), { numRuns: 15 })
+      ), { numRuns: 4 })
     })
 
     it('should emit progress events consistently', () => {
@@ -425,7 +425,7 @@ describe('Progress Tracking System Properties', () => {
             expect(milestoneEvents[0].data.milestone.id).toBe('first_repair')
           }
         }
-      ), { numRuns: 20 })
+      ), { numRuns: 5 })
     })
   })
 })

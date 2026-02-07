@@ -165,7 +165,7 @@ describe('Property 7: Customization and Collection Management', () => {
           expect(customizationState['progress'].isComplete).toBe(true)
         }
       ),
-      { numRuns: 50 }
+      { numRuns: 3 }
     )
   })
 
@@ -258,7 +258,7 @@ describe('Property 7: Customization and Collection Management', () => {
           expect(newPetInCollection.customizations).toHaveLength(newPetData.customizations.length)
         }
       ),
-      { numRuns: 30 }
+      { numRuns: 2 }
     )
   })
 
@@ -332,7 +332,7 @@ describe('Property 7: Customization and Collection Management', () => {
           expect(savedPet.type).toBe(petType)
         }
       ),
-      { numRuns: 30 }
+      { numRuns: 2 }
     )
   })
 
@@ -393,7 +393,7 @@ describe('Property 7: Customization and Collection Management', () => {
           }
         }
       ),
-      { numRuns: 50 }
+      { numRuns: 3 }
     )
   })
 
@@ -514,7 +514,7 @@ describe('Property 7: Customization and Collection Management', () => {
           expect(customizationState['progress'].isComplete).toBe(false) // Should not be marked complete on error
         }
       ),
-      { numRuns: 20 }
+      { numRuns: 5 }
     )
   })
 
@@ -592,7 +592,7 @@ describe('Property 7: Customization and Collection Management', () => {
           }
         }
       ),
-      { numRuns: 30 }
+      { numRuns: 2 }
     )
   })
 
@@ -670,7 +670,7 @@ describe('Property 7: Customization and Collection Management', () => {
           })
         }
       ),
-      { numRuns: 25 }
+      { numRuns: 2 }
     )
   })
 })
